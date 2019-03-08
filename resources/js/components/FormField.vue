@@ -32,11 +32,11 @@ export default {
 
     mounted() {
         this.watchedComponents.forEach(component => {
-            attribute = this.field.selectedAttribute !== undefined ? this.field.selectedAttribute : 'value'
+            let attribute = this.field.selectedAttribute !== undefined ? this.field.selectedAttribute : 'value'
 
             component.$watch(attribute, (value) => {
 
-                this.parentValue = (value && attribute == 'selectedResource') ? value.value : value;
+                this.parentValue = (value && attribute !== 'value') ? value.value : value;
 
                 this.updateOptions();
             }, { immediate: true });
