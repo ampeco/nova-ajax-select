@@ -32,12 +32,7 @@ export default {
 
     mounted() {
         this.watchedComponents.forEach(component => {
-
-            let attribute = 'value'
-
-            if(component.field.component === 'belongs-to-field') {
-                attribute = 'selectedResource';
-            }
+            attribute = this.field.selectedAttribute !== undefined ? this.field.selectedAttribute : 'value'
 
             component.$watch(attribute, (value) => {
 

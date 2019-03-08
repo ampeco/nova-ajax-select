@@ -25,4 +25,11 @@ class AjaxSelect extends Field
 
         return $this;
     }
+
+    public function selectedAttribute($attribute)
+    {
+        $this->withMeta(['selectedAttribute' => $attribute]);
+
+        return $this;
+    }
 }
