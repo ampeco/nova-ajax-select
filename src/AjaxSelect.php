@@ -32,4 +32,11 @@ class AjaxSelect extends Field
 
         return $this;
     }
+
+    public function hideIfSingleResultOrParentNotSelected()
+    {
+        $this->withMeta(['hideIfSingleResultOrParentNotSelected' => true]);
+
+        return $this;
+    }
 }

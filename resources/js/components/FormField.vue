@@ -1,5 +1,5 @@
 <template>
-    <default-field :field="field" :errors="errors">
+    <default-field :field="field" :errors="errors" v-show="!isFieldHidden">
         <template slot="field">
              <select v-model="value" class="w-full form-control form-select" :disabled="disabled">
                 <option :value="null">Choose an option</option>
@@ -61,7 +61,18 @@ export default {
 
         disabled() {
             return this.loaded == false && (this.field.parent_attribute != undefined && this.parentValue == null) || this.options.length == 0;
+        },
+
+      isFieldHidden(){
+        if(this.disabled){
+          return true;
         }
+        if(this.field.hideIfSingleResultOrParentNotSelected != undefined && this.field.hideIfSingleResultOrParentNotSelected == true) {
+          return this.options.length <= 1;
+        }
+
+        return false;
+      },
     },
 
     methods: {
@@ -70,7 +81,7 @@ export default {
         },
 
         fill(formData) {
-            formData.append(this.field.attribute, this.value || '')
+            formData.append(this.field.attribute, this.getFieldvalue() || '')
         },
 
         updateOptions() {
@@ -103,6 +114,15 @@ export default {
         isWatchingComponent(component) {
             return component.field !== undefined
                 && component.field.attribute == this.field.parent_attribute;
+        },
+
+        getFieldvalue()
+        {
+          if(this.field.hideIfSingleResultOrParentNotSelected && this.options.length == 1){
+            return this.options[0].value;
+          }
+
+          return this.value;
         }
     },
 }
