@@ -1,7 +1,7 @@
 <template>
     <default-field :field="field" :errors="errors" v-show="!isFieldHidden">
         <template slot="field">
-             <select v-model="value" class="w-full form-control form-select" :disabled="disabled">
+             <select v-model="value" class="w-full form-control form-select" :disabled="disabled" :dusk="field.attribute">
                 <option :value="null">Choose an option</option>
                 <option
                     :key="option.value"
