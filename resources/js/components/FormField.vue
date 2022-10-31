@@ -31,6 +31,10 @@ export default {
     },
 
     mounted() {
+        if (!this.parent_attribute){
+            this.updateOptions();
+        }
+
         this.watchedComponents.forEach(component => {
             let attribute = this.field.selectedAttribute !== undefined ? this.field.selectedAttribute : 'value'
 
