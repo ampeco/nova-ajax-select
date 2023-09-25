@@ -1,17 +1,20 @@
 <template>
-    <default-field :field="field" :errors="errors" v-show="!isFieldHidden">
-        <template slot="field">
-             <select v-model="value" class="w-full form-control form-select" :disabled="disabled" :dusk="field.attribute">
-                <option :value="null">Choose an option</option>
-                <option
-                    :key="option.value"
-                    :value="option.value"
-                    v-for="option in options">
-                    {{ option.display }}
-                </option>
-            </select>
+    <DefaultField :field="field" :errors="errors" v-show="!isFieldHidden">
+        <template #field>
+            <div class="flex relative w-full">
+                <select v-model="value" class="w-full form-control form-select form-select-bordered" :disabled="disabled" :dusk="field.attribute">
+                    <option :value="null">Choose an option</option>
+                    <option
+                        :key="option.value"
+                        :value="option.value"
+                        v-for="option in options">
+                        {{ option.display }}
+                    </option>
+                </select>
+                <svg class="flex-shrink-0 pointer-events-none form-select-arrow" xmlns="http://www.w3.org/2000/svg" width="10" height="6" viewBox="0 0 10 6"><path class="fill-current" d="M8.292893.292893c.390525-.390524 1.023689-.390524 1.414214 0 .390524.390525.390524 1.023689 0 1.414214l-4 4c-.390525.390524-1.023689.390524-1.414214 0l-4-4c-.390524-.390525-.390524-1.023689 0-1.414214.390525-.390524 1.023689-.390524 1.414214 0L5 3.585786 8.292893.292893z"></path></svg>
+            </div>
         </template>
-    </default-field>
+    </DefaultField>
 </template>
 
 <script>
@@ -35,24 +38,13 @@ export default {
             this.updateOptions();
         }
 
-        this.watchedComponents.forEach(component => {
-            let attribute = this.field.selectedAttribute !== undefined ? this.field.selectedAttribute : 'value'
-
-            component.$watch(attribute, (value) => {
-
-                this.parentValue = (value && attribute !== 'value') ? value.value : value;
-
-                this.updateOptions();
-            }, { immediate: true });
+        Nova.$on(this.field.parent_attribute+'-change', (value) => {
+           this.parentValue = value
+            this.updateOptions()
         });
     },
 
     computed: {
-        watchedComponents() {
-            return this.$parent.$children.filter(component => {
-                return this.isWatchingComponent(component);
-            })
-        },
         endpoint() {
             return this.field.endpoint
                 .replace('{resource-name}', this.resourceName)
@@ -97,6 +89,7 @@ export default {
                     .then(response => {
                         this.loaded = true;
                         this.options = response.data;
+                        console.log(JSON.stringify(response.data))
                         let optionValueExists = false;
                         this.options.forEach(option => {
                             if(option.value == this.value) {
@@ -113,11 +106,6 @@ export default {
 
         notWatching() {
             return this.field.parent_attribute == undefined;
-        },
-
-        isWatchingComponent(component) {
-            return component.field !== undefined
-                && component.field.attribute == this.field.parent_attribute;
         },
 
         getFieldvalue()
