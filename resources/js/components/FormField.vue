@@ -1,5 +1,5 @@
 <template>
-    <DefaultField :field="field" :errors="errors" v-show="!isFieldHidden">
+    <DefaultField :field="field" :errors="errors" v-show="!isFieldHidden" :show-help-text="showHelpText" >
         <template #field>
             <div class="flex relative w-full">
                 <select v-model="value" class="w-full form-control form-select form-select-bordered" :disabled="disabled" :dusk="field.attribute">
@@ -56,10 +56,17 @@ export default {
         },
 
         disabled() {
+            if(this.field.alwaysShow === true) {
+                return false;
+            }
             return this.loaded == false && (this.field.parent_attribute != undefined && this.parentValue == null) || this.options.length == 0;
         },
 
       isFieldHidden(){
+        if(this.field.alwaysShow === true) {
+            return false;
+        }
+
         if(this.disabled){
           return true;
         }
@@ -89,7 +96,6 @@ export default {
                     .then(response => {
                         this.loaded = true;
                         this.options = response.data;
-                        console.log(JSON.stringify(response.data))
                         let optionValueExists = false;
                         this.options.forEach(option => {
                             if(option.value == this.value) {

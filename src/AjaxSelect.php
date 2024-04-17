@@ -39,4 +39,11 @@ class AjaxSelect extends Field
 
         return $this;
     }
+
+    public function alwaysShow()
+    {
+        $this->withMeta(['alwaysShow' => true]);
+
+        return $this;
+    }
 }
