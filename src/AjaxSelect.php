@@ -46,4 +46,11 @@ class AjaxSelect extends Field
 
         return $this;
     }
+
+    public function options(array $options)
+    {
+        $this->withMeta(['options' => $options]);
+
+        return $this;
+    }
 }

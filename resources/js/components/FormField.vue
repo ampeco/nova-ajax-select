@@ -34,8 +34,10 @@ export default {
     },
 
     mounted() {
-        if (!this.parent_attribute){
+        if (!this.field.parent_attribute){
             this.updateOptions();
+        } else if(this.field.options) {
+          this.options = this.field.options;
         }
 
         Nova.$on(this.field.parent_attribute+'-change', (value) => {
