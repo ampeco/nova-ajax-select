@@ -53,4 +53,9 @@ class AjaxSelect extends Field
 
         return $this;
     }
+
+    public function operator(int $operator) {
+        $this->withMeta(['operator' => $operator]);
+        return $this;
+    }
 }

@@ -29,7 +29,8 @@ export default {
         return {
             options: [],
             loaded: false,
-            parentValue: null
+            parentValue: null,
+            operator: null,
         }
     },
 
@@ -40,8 +41,15 @@ export default {
           this.options = this.field.options;
         }
 
+        this.operator = this.field.operator;
+
         Nova.$on(this.field.parent_attribute+'-change', (value) => {
            this.parentValue = value
+            this.updateOptions()
+        });
+
+        Nova.$on('operator-change', (value) => {
+            this.operator = value
             this.updateOptions()
         });
     },
@@ -51,6 +59,7 @@ export default {
             return this.field.endpoint
                 .replace('{resource-name}', this.resourceName)
                 .replace('{resource-id}', this.resourceId ? this.resourceId : '')
+                .replace('{operator}', this.operator ? this.operator : '')
                 .replace('{'+ this.field.parent_attribute +'}', this.parentValue ? this.parentValue : '')
         },
         empty() {
