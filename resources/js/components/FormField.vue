@@ -34,22 +34,23 @@ export default {
     },
 
     mounted() {
-        if (!this.parent_attribute){
-            this.updateOptions();
-        }
+        this.parentValue = this.field.parent_value
+        this.updateOptions();
 
         Nova.$on(this.field.parent_attribute+'-change', (value) => {
-           this.parentValue = value
+            this.parentValue = value
             this.updateOptions()
         });
     },
 
     computed: {
         endpoint() {
-            return this.field.endpoint
+            const result = this.field.endpoint
                 .replace('{resource-name}', this.resourceName)
                 .replace('{resource-id}', this.resourceId ? this.resourceId : '')
                 .replace('{'+ this.field.parent_attribute +'}', this.parentValue ? this.parentValue : '')
+
+            return result;
         },
         empty() {
             return this.loaded && this.options.length == 0;
@@ -89,7 +90,6 @@ export default {
                     .then(response => {
                         this.loaded = true;
                         this.options = response.data;
-                        console.log(JSON.stringify(response.data))
                         let optionValueExists = false;
                         this.options.forEach(option => {
                             if(option.value == this.value) {
@@ -108,8 +108,7 @@ export default {
             return this.field.parent_attribute == undefined;
         },
 
-        getFieldvalue()
-        {
+        getFieldvalue() {
           if(this.field.hideIfSingleResultOrParentNotSelected && this.options.length == 1){
             return this.options[0].value;
           }

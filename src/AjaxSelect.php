@@ -19,9 +19,12 @@ class AjaxSelect extends Field
         return $this;
     }
 
-    public function parent($attribute)
+    public function parent($attribute, $parentValue = null)
     {
-        $this->withMeta(['parent_attribute' => $attribute]);
+        $this->withMeta([
+            'parent_attribute' => $attribute,
+            'parent_value' => $parentValue,
+        ]);
 
         return $this;
     }
