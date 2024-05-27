@@ -1,5 +1,5 @@
 <template>
-    <DefaultField :field="field" :errors="errors" v-show="!isFieldHidden">
+    <DefaultField :field="field" :errors="errors" v-show="!isFieldHidden" :show-help-text="showHelpText" >
         <template #field>
             <div class="flex relative w-full">
                 <select v-model="value" class="w-full form-control form-select form-select-bordered" :disabled="disabled" :dusk="field.attribute">
@@ -29,16 +29,33 @@ export default {
         return {
             options: [],
             loaded: false,
-            parentValue: null
+            parentValue: null,
+            operator: null,
         }
     },
 
     mounted() {
-        this.parentValue = this.field.parent_value
-        this.updateOptions();
+        this.operator = this.field.operator;
+
+        if (this.field.parentValue) {
+          this.parentValue = this.field.parentValue;
+        }
+
+        if (this.field.options) {
+          this.options = this.field.options;
+        }
+
+        if (!this.options) {
+          this.updateOptions();
+        }
 
         Nova.$on(this.field.parent_attribute+'-change', (value) => {
             this.parentValue = value
+            this.updateOptions()
+        });
+
+        Nova.$on('operator-change', (value) => {
+            this.operator = value
             this.updateOptions()
         });
     },
@@ -48,6 +65,7 @@ export default {
             const result = this.field.endpoint
                 .replace('{resource-name}', this.resourceName)
                 .replace('{resource-id}', this.resourceId ? this.resourceId : '')
+                .replace('{operator}', this.operator ? this.operator : '')
                 .replace('{'+ this.field.parent_attribute +'}', this.parentValue ? this.parentValue : '')
 
             return result;
@@ -57,10 +75,17 @@ export default {
         },
 
         disabled() {
+            if(this.field.alwaysShow === true) {
+                return false;
+            }
             return this.loaded == false && (this.field.parent_attribute != undefined && this.parentValue == null) || this.options.length == 0;
         },
 
       isFieldHidden(){
+        if(this.field.alwaysShow === true) {
+            return false;
+        }
+
         if(this.disabled){
           return true;
         }
