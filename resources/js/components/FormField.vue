@@ -2,7 +2,7 @@
     <DefaultField :field="field" :errors="errors" v-show="!isFieldHidden" :show-help-text="showHelpText" >
         <template #field>
             <div class="flex relative w-full">
-                <select v-model="value" class="w-full form-control form-select form-select-bordered" :disabled="disabled" :dusk="field.attribute">
+                <select v-model="value" class="w-full block form-control form-control-bordered form-input" :disabled="disabled" :dusk="field.attribute">
                     <option :value="null">Choose an option</option>
                     <option
                         :key="option.value"
