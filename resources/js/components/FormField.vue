@@ -36,16 +36,13 @@ export default {
 
     mounted() {
         this.operator = this.field.operator;
-
-        if (this.field.parent_value) {
-          this.parentValue = this.field.parent_value;
-        }
+        this.parentValue = this.field.parent_value;
 
         if (this.field.options) {
           this.options = this.field.options;
+        } else {
+            this.updateOptions();
         }
-
-        this.updateOptions();
 
         Nova.$on(this.field.parent_attribute+'-change', (value) => {
             this.parentValue = value
